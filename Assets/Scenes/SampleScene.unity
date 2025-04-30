@@ -536,6 +536,37 @@ MonoBehaviour:
   maxZAxisOffset: 0.025
   aimingMaxHorizontalOffset: 0
   aimingMaxZAxisOffset: 0
+--- !u!1 &829852932
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 829852933}
+  m_Layer: 0
+  m_Name: FirePoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &829852933
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 829852932}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 963194228}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -628,6 +659,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 829852933}
   - {fileID: 806261622}
   m_Father: {fileID: 682729301}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -704,7 +736,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1009618334}
   m_Layer: 0
-  m_Name: Firepoint
+  m_Name: Particle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1428,6 +1460,7 @@ GameObject:
   - component: {fileID: 9213784681863959874}
   - component: {fileID: 9213784681863959873}
   - component: {fileID: 9213784681863959872}
+  - component: {fileID: 9213784681863959877}
   m_Layer: 0
   m_Name: Aks_74U_2.0
   m_TagString: Untagged
@@ -1543,7 +1576,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hipfireRecoilVertical: 0.17
-  hipfireRecoilHorizontal: 0.0025
+  hipfireRecoilHorizontal: 0.00225
   aimRecoilVertical: 0
   aimRecoilHorizontal: 0
   returnSpeed: 4
@@ -1573,8 +1606,8 @@ MonoBehaviour:
   reloadTime: 2.4
   isFullAutomatic: 1
   isShotgunMode: 0
-  pelletsPerShot: 5
-  shotgunSpread: 0.1
+  pelletsPerShot: 6
+  shotgunSpread: 0.08
   adsspreadTightenFactor: 0.5
   shootParticlePrefab: {fileID: 1928210541913088430, guid: 85a04169b845e3f49bb65a56a46b1c39, type: 3}
   hitParticlePrefab: {fileID: 5748910306300870541, guid: e04484646af8ee7429b8a0562032f00c, type: 3}
@@ -1585,7 +1618,7 @@ MonoBehaviour:
   lastFireTime: 0
   isReloading: 0
   playerCamera: {fileID: 963194227}
-  raycastOrigin: {fileID: 1009618334}
+  raycastOrigin: {fileID: 829852933}
   gunTransform: {fileID: 9213784681863959871}
   shootParticleSpawnPoint: {fileID: 1009618334}
   crosshair: {fileID: 1259124912}
@@ -1595,6 +1628,20 @@ MonoBehaviour:
   spreadX: 0
   spreadY: 0
   spreadZ: 0
+--- !u!114 &9213784681863959877
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8400938393388683141}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3aba1f54cc9c00447a4c2cd73e7dbce8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  anim: {fileID: 9213784681863959872}
+  animSounds: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
