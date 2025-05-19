@@ -40,6 +40,7 @@ public class Gun : MonoBehaviour
     public Transform shootParticleSpawnPoint;
     public GameObject crosshair;
     public Recoil recoil;
+    public PlayerMovement playerMovement;
     public ProceduralRecoil recoilScript;
     
     [Header("Animation")]

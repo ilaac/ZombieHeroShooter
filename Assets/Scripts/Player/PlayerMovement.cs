@@ -11,7 +11,7 @@ public class PlayerMovement : MonoBehaviour
     public float sprintSpeed;
     public float adsWalkSpeed;
     public float groundDrag;
-    
+
     private Vector3 moveDirection = Vector3.zero;
 
     [Header("Jumping")]
@@ -47,10 +47,10 @@ public class PlayerMovement : MonoBehaviour
     [Header("Logic")]
     public Transform orientation;
     public MovementState state;
-    
+
     [Header("Animation")]
     public Animator anim;
-    
+
     float horizontalInput;
     float verticalInput;
     Rigidbody rb;
@@ -63,21 +63,29 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private WeaponSway weaponSwayAndBob;
+    public Gun gun;
+
     public enum MovementState
     {
-        walking,
-        sprinting,
-        crouching,
-        air,
-        aiming,
-        aimWalking
+        Idle,
+        Walking,
+        Crouching,
+        Air
     }
 
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
-        anim = GetComponent<Animator>();
         rb.freezeRotation = true;
+
+        if (anim == null)
+        {
+            Debug.LogError("Animator component not found on " + gameObject.name);
+        }
+        else
+        {
+            Debug.Log("Animator component found: " + anim.name);
+        }
 
         readyToJump = true;
         currentHeight = standingHeight;
@@ -86,10 +94,9 @@ public class PlayerMovement : MonoBehaviour
         {
             defaultFOV = playerCamera.fieldOfView;
             targetFOV = defaultFOV;
-        
-            // Ensure camera is at the correct local position initially
+
             Vector3 cameraInitialPosition = playerCamera.transform.localPosition;
-            cameraInitialPosition.y = standingHeight / 2f; // Set camera at half the player's height
+            cameraInitialPosition.y = standingHeight / 2f;
             playerCamera.transform.localPosition = cameraInitialPosition;
         }
         else
@@ -97,10 +104,9 @@ public class PlayerMovement : MonoBehaviour
             Debug.LogError("Player Camera not assigned! Assign the camera in the inspector.");
         }
 
-        // Ensure the orientation is correctly positioned at the start
         if (orientation != null)
         {
-            orientation.localPosition = Vector3.zero; // Position orientation correctly
+            orientation.localPosition = Vector3.zero;
         }
     }
 
@@ -120,12 +126,15 @@ public class PlayerMovement : MonoBehaviour
         UpdateCrouch();
         HandleAnimations();
     }
-    
+
     public void SetAnimator(Animator newAnimator)
     {
         anim = newAnimator;
+        if (anim == null)
+        {
+            Debug.LogError("New Animator assigned is null!");
+        }
     }
-
 
     private void FixedUpdate()
     {
@@ -136,8 +145,8 @@ public class PlayerMovement : MonoBehaviour
     {
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
+        //Debug.Log($"Input: Horizontal={horizontalInput}, Vertical={verticalInput}, Grounded={grounded}");
 
-        // Jump
         if (Input.GetKey(jumpKey) && readyToJump && grounded)
         {
             readyToJump = false;
@@ -145,94 +154,76 @@ public class PlayerMovement : MonoBehaviour
             Invoke(nameof(ResetJump), jumpCooldown);
         }
 
-        // Crouch (toggle or hold depending on the boolean flag)
         if (isCrouchToggleEnabled)
         {
             if (Input.GetKeyDown(crouchKey))
             {
-                isCrouching = !isCrouching; // Toggle crouch state when the key is pressed
+                isCrouching = !isCrouching;
             }
         }
         else
         {
             if (Input.GetKeyDown(crouchKey))
             {
-                isCrouching = true; // Start crouching
+                isCrouching = true;
                 anim.SetBool("IsCrouching", true);
             }
             else if (Input.GetKeyUp(crouchKey))
             {
-                isCrouching = false; // Stop crouching
+                isCrouching = false;
                 anim.SetBool("IsCrouching", false);
-            }
-        }
-
-        // Sprint (toggle or hold depending on the boolean flag)
-        if (isSprintToggleEnabled)
-        {
-            if (Input.GetKeyUp(sprintKey))
-            {
-                state = MovementState.walking;
-                moveSpeed = walkSpeed;
-                targetFOV = defaultFOV;
-            }
-        }
-        else
-        {
-            {
-                state = MovementState.walking;
-                moveSpeed = walkSpeed;
-                targetFOV = defaultFOV;
             }
         }
     }
 
     private void StateHandler()
     {
-        if (grounded)
+        if (!grounded)
         {
-            if (isCrouching)
-            {
-                state = MovementState.crouching;
-                moveSpeed = crouchSpeed;
-                targetFOV = defaultFOV + crouchFOVChange;
-            }
-            else if (horizontalInput == 0 && verticalInput == 0)
-            {
-                state = MovementState.walking;
-                moveSpeed = 0f;
-                targetFOV = defaultFOV;
-            }
-            else
-            {
-                state = MovementState.walking;
-                moveSpeed = walkSpeed;
-                targetFOV = defaultFOV;
-            }
+            state = MovementState.Air;
+            targetFOV = defaultFOV;
+            //Debug.Log($"StateHandler: Set state to Air, Speed={moveSpeed}");
+        }
+        else if (isCrouching)
+        {
+            state = MovementState.Crouching;
+            moveSpeed = crouchSpeed;
+            targetFOV = defaultFOV + crouchFOVChange;
+            //Debug.Log($"StateHandler: Set state to Crouching, Speed={moveSpeed}");
+        }
+        else if (horizontalInput == 0 && verticalInput == 0)
+        {
+            state = MovementState.Idle;
+            moveSpeed = 0f;
+            targetFOV = defaultFOV;
+            //Debug.Log($"StateHandler: Set state to Idle, Speed={moveSpeed}");
         }
         else
         {
-            state = MovementState.air;
+            state = MovementState.Walking;
+            moveSpeed = walkSpeed;
             targetFOV = defaultFOV;
+            //Debug.Log($"StateHandler: Set state to Walking, Speed={moveSpeed}");
         }
     }
 
     private void MovePlayer()
     {
-        // Use the orientation's forward and right directions for movement
         moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
 
         if (grounded)
         {
             if (horizontalInput == 0 && verticalInput == 0)
             {
-                rb.velocity = new Vector3(0f, rb.velocity.y, 0f); // Stop movement instantly
+                rb.velocity = new Vector3(0f, rb.velocity.y, 0f);
                 rb.drag = groundDrag;
             }
             else
             {
                 rb.drag = 0;
-                rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
+                Vector3 force = moveDirection.normalized * moveSpeed * 10f;
+                rb.AddForce(force, ForceMode.Force);
+                //Debug.Log($"MovePlayer: Applying force={force}, moveSpeed={moveSpeed}, state={state}");
             }
         }
         else
@@ -269,41 +260,52 @@ public class PlayerMovement : MonoBehaviour
         float targetHeight = isCrouching ? crouchHeight : standingHeight;
         currentHeight = Mathf.Lerp(currentHeight, targetHeight, Time.deltaTime * crouchTransitionSpeed);
 
-        // Adjust the player's body height (capsule) but not the orientation
         Vector3 playerScale = transform.GetChild(0).localScale;
         playerScale.y = currentHeight;
         transform.GetChild(0).localScale = playerScale;
 
-        // Adjust the camera's position during crouch/stand
         Vector3 cameraPosition = playerCamera.transform.localPosition;
-        cameraPosition.y = currentHeight / 2f; // Keep camera at half the height
+        cameraPosition.y = currentHeight / 2f;
         playerCamera.transform.localPosition = cameraPosition;
-        
+
         if (orientation != null)
         {
-            // Fix the orientation position to stay at the correct height
             orientation.localPosition = Vector3.zero;
         }
     }
-    
+
     private void HandleAnimations()
     {
-        //walking animation logic
-        if (moveDirection == Vector3.zero && !isCrouching)
+        if (anim == null)
         {
-            anim.SetFloat("Speed", .025f, 0.3f, Time.deltaTime);
+            //Debug.LogError("Animator is null in HandleAnimations!");
+            return;
         }
-        else if (moveDirection != Vector3.zero && !Input.GetKey(KeyCode.LeftShift) && !isCrouching)
+
+        if (gun != null && gun.anim != null)
         {
-            anim.SetFloat("Speed", 0.5f, 0.1f, Time.deltaTime);
+            gun.anim.SetBool("IsWalking", state == MovementState.Walking);
+            //Debug.Log($"Gun Animator: IsWalking={gun.anim.GetBool("IsWalking")}");
         }
-        else if (moveDirection == Vector3.zero && isCrouching)
+
+        // Set Speed without damping to ensure immediate update
+        float targetSpeed = 0f;
+        switch (state)
         {
-            anim.SetFloat("Speed", 0.25f, 0.3f, Time.deltaTime);
+            case MovementState.Idle:
+                targetSpeed = 0f;
+                break;
+            case MovementState.Walking:
+                targetSpeed = 1f;
+                break;
+            case MovementState.Crouching:
+                targetSpeed = moveDirection != Vector3.zero ? 0.95f : 0f;
+                break;
+            case MovementState.Air:
+                targetSpeed = 0f;
+                break;
         }
-        else if (moveDirection != Vector3.zero && isCrouching)
-        {
-            anim.SetFloat("Speed", 0.95f, 0.3f, Time.deltaTime);
-        }
+        anim.SetFloat("Speed", targetSpeed);
+        //Debug.Log($"HandleAnimations: Set Speed to {targetSpeed} for state={state}, Animator Speed={anim.GetFloat("Speed")}");
     }
 }
