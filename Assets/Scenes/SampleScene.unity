@@ -667,8 +667,8 @@ MonoBehaviour:
   zAxisRotationIntensity: 0.5
   xAxisRecoverySpeed: 5
   zAxisRecoverySpeed: 5
-  maxHorizontalOffset: 0.025
-  maxZAxisOffset: 0.025
+  maxHorizontalOffset: 0.005
+  maxZAxisOffset: 0.005
   aimingMaxHorizontalOffset: 0
   aimingMaxZAxisOffset: 0
 --- !u!1 &829852932
@@ -1778,13 +1778,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74b75baf5adc2b540a118dd969eddb84, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hipfireRecoilVertical: 0.195
+  hipfireRecoilVertical: 0.16
   hipfireRecoilHorizontal: 0.0015
   aimRecoilVertical: 0
   aimRecoilHorizontal: 0
-  returnSpeed: 1.5
+  returnSpeed: 2
   snappiness: 7.5
-  shakeMagnitude: 0.03
+  shakeMagnitude: 1
   maxShakeDuration: 0.5
   randomRecoilVerticalMultiplier: 0.55
   randomRecoilHorizontalMultiplier: 0
