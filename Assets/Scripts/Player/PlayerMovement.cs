@@ -145,7 +145,6 @@ public class PlayerMovement : MonoBehaviour
     {
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
-        //Debug.Log($"Input: Horizontal={horizontalInput}, Vertical={verticalInput}, Grounded={grounded}");
 
         if (Input.GetKey(jumpKey) && readyToJump && grounded)
         {
@@ -182,28 +181,24 @@ public class PlayerMovement : MonoBehaviour
         {
             state = MovementState.Air;
             targetFOV = defaultFOV;
-            //Debug.Log($"StateHandler: Set state to Air, Speed={moveSpeed}");
         }
         else if (isCrouching)
         {
             state = MovementState.Crouching;
             moveSpeed = crouchSpeed;
             targetFOV = defaultFOV + crouchFOVChange;
-            //Debug.Log($"StateHandler: Set state to Crouching, Speed={moveSpeed}");
         }
         else if (horizontalInput == 0 && verticalInput == 0)
         {
             state = MovementState.Idle;
             moveSpeed = 0f;
             targetFOV = defaultFOV;
-            //Debug.Log($"StateHandler: Set state to Idle, Speed={moveSpeed}");
         }
         else
         {
             state = MovementState.Walking;
             moveSpeed = walkSpeed;
             targetFOV = defaultFOV;
-            //Debug.Log($"StateHandler: Set state to Walking, Speed={moveSpeed}");
         }
     }
 
@@ -223,7 +218,6 @@ public class PlayerMovement : MonoBehaviour
                 rb.drag = 0;
                 Vector3 force = moveDirection.normalized * moveSpeed * 10f;
                 rb.AddForce(force, ForceMode.Force);
-                //Debug.Log($"MovePlayer: Applying force={force}, moveSpeed={moveSpeed}, state={state}");
             }
         }
         else
@@ -285,7 +279,6 @@ public class PlayerMovement : MonoBehaviour
         if (gun != null && gun.anim != null)
         {
             gun.anim.SetBool("IsWalking", state == MovementState.Walking);
-            //Debug.Log($"Gun Animator: IsWalking={gun.anim.GetBool("IsWalking")}");
         }
 
         // Set Speed without damping to ensure immediate update
@@ -306,6 +299,5 @@ public class PlayerMovement : MonoBehaviour
                 break;
         }
         anim.SetFloat("Speed", targetSpeed);
-        //Debug.Log($"HandleAnimations: Set Speed to {targetSpeed} for state={state}, Animator Speed={anim.GetFloat("Speed")}");
     }
 }

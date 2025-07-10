@@ -1242,8 +1242,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5db35b8d3114c6d4a8554a68351941f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkSpeed: 3
-  sprintSpeed: 5
+  walkSpeed: 4
+  sprintSpeed: 4
   adsWalkSpeed: 0
   groundDrag: 2
   jumpForce: 5.5
@@ -1778,7 +1778,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74b75baf5adc2b540a118dd969eddb84, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hipfireRecoilVertical: 0.16
+  hipfireRecoilVertical: 0.145
   hipfireRecoilHorizontal: 0.0015
   aimRecoilVertical: 0
   aimRecoilHorizontal: 0
